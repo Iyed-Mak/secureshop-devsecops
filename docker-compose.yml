@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "8001:8000"
+
+
+  product-service:
+    build: ./services/product-service
+    ports:
+      -"8002:8000"
+
+
+  order-service:
+    build: ./services/order-service
+    ports:
+      
+
+      -"8003:8000"
+
+
+  inventory-service:
+    build: ./services/inventory-service
+    ports:
+     -"8006:8000"
+
+
+  payment-service:
+    build: ./services/payment-service
+    ports:
+      
+
+     -"8004:8000"
+
+
+  notification-service:
+    build: ./services/notification-service
+    ports:
+      
+
+     -"8005:8000"
+
+
+  gateway:
+    build: ./gateway
+    ports:
+      
+
+     - "80:80"
