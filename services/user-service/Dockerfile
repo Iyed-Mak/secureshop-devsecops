@@ -1,18 +1,20 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
+
+# Create non-root user
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
 WORKDIR /app
 
-# Prevent Python from writing .pyc files and buffering logs
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
-COPY . .
+COPY app/ ./app/
 
-EXPOSE 8000
+# Change ownership
+RUN chown -R appuser:appgroup /app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+USER appuser
+
+EXPOSE 8001
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
