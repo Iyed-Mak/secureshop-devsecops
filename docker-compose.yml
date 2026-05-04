@@ -4,48 +4,92 @@ services:
   user-service:
     build: ./services/user-service
     ports:
-      - "8001:8000"
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql://user:password@user-db:5432/userdb
+      JWT_SECRET_KEY: dev-secret-change-in-prod
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - backend
+
 
 
   product-service:
     build: ./services/product-service
     ports:
-      -"8002:8000"
-
+      - "8002:8002"
+    networks:
+      - backend
 
   order-service:
     build: ./services/order-service
     ports:
-      
-
-      -"8003:8000"
-
+      - "8003:8003"
+    networks:
+      - backend
 
   inventory-service:
     build: ./services/inventory-service
     ports:
-     -"8006:8000"
-
+      - "8006:8006"
+    networks:
+      - backend
 
   payment-service:
     build: ./services/payment-service
     ports:
-      
-
-     -"8004:8000"
-
+      - "8004:8004"
+    networks:
+      - backend
 
   notification-service:
     build: ./services/notification-service
     ports:
-      
-
-     -"8005:8000"
-
+      - "8005:8005"
+    networks:
+      - backend
 
   gateway:
     build: ./gateway
     ports:
-      
+      - "80:80"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - inventory-service
+      - payment-service
+      - notification-service
+    networks:
+      - backend
 
-     - "80:80"
+  user-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: userdb
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d userdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  user-db-data:
+
+
+
+  

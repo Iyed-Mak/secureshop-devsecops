@@ -1,39 +1,25 @@
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask
 
-from app.config import settings
-from app.database import Base, engine
-from app.routes import auth, users
+from app.config import Config
+from app.extensions import db, jwt
+from app.routes import api
 
+app = Flask(__name__)
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Create tables on startup
-    Base.metadata.create_all(bind=engine)
-    yield
+app.config.from_object(Config)
 
+db.init_app(app)
+jwt.init_app(app)
 
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
-    docs_url="/docs",
-    redoc_url="/redoc",
-    lifespan=lifespan,
-)
+app.register_blueprint(api)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],   # Tighten in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth.router)
-app.include_router(users.router)
+with app.app_context():
+    db.create_all()
 
 
-@app.get("/health")
-def health_check():
-    return {"status": "healthy", "service": settings.PROJECT_NAME, "version": settings.VERSION}
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=8001,
+        debug=True
+    )
