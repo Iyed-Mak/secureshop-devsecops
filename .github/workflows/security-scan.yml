@@ -1,0 +1,89 @@
+name: DevSecOps Security Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  security-scans:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+
+      # ------------------------------------------------
+      # STEP 1 - Download repository code
+      # ------------------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------
+      # STEP 2 - Install Python
+      # ------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------
+      # STEP 3 - Install dependencies
+      # ------------------------------------------------
+      - name: Install Python Dependencies
+        run: |
+          pip install -r services/user-service/requirements.txt
+          pip install semgrep
+
+      # ------------------------------------------------
+      # STEP 4 - Create reports directories
+      # ------------------------------------------------
+      - name: Create Reports Directories
+        run: |
+          mkdir -p reports/sast
+          mkdir -p reports/sca
+
+      # ------------------------------------------------
+      # STEP 5 - Run Semgrep SAST scan
+      # ------------------------------------------------
+      - name: Run Semgrep Scan
+        run: |
+          semgrep \
+          --config=p/python \
+          --sarif \
+          --output reports/sast/semgrep-results.sarif \
+          services/user-service/app
+
+      # ------------------------------------------------
+      # STEP 6 - Upload Semgrep SARIF to GitHub
+      # ------------------------------------------------
+      - name: Upload Semgrep Results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/sast/semgrep-results.sarif
+
+      # ------------------------------------------------
+      # STEP 7 - Run Trivy SCA scan
+      # ------------------------------------------------
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "./services/user-service"
+          format: "sarif"
+          output: "reports/sca/trivy-results.sarif"
+
+      # ------------------------------------------------
+      # STEP 8 - Upload Trivy SARIF to GitHub
+      # ------------------------------------------------
+      - name: Upload Trivy Results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/sca/trivy-results.sarif
