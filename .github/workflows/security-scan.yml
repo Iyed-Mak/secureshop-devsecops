@@ -39,7 +39,7 @@ jobs:
       # ------------------------------------------------
       - name: Install Python Dependencies
         run: |
-          pip install -r services/user-service/requirements.txt
+          pip install -r ../services/user-service/requirements.txt
           pip install semgrep
 
       # ------------------------------------------------
@@ -59,7 +59,7 @@ jobs:
           --config=p/python \
           --sarif \
           --output reports/sast/semgrep-results.sarif \
-          services/user-service/app
+          ../services/user-service/app
 
       # ------------------------------------------------
       # STEP 6 - Upload Semgrep SARIF to GitHub
@@ -68,6 +68,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: reports/sast/semgrep-results.sarif
+          category: semgrep
 
       # ------------------------------------------------
       # STEP 7 - Run Trivy SCA scan
@@ -76,7 +77,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "fs"
-          scan-ref: "./services/user-service"
+          scan-ref: "../services/user-service"
           format: "sarif"
           output: "reports/sca/trivy-results.sarif"
 
@@ -87,3 +88,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: reports/sca/trivy-results.sarif
+          category: trivy
