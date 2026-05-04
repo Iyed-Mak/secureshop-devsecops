@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   user-service:
     build: ./services/user-service
@@ -14,43 +12,96 @@ services:
         condition: service_healthy
     networks:
       - backend
-
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   product-service:
     build: ./services/product-service
     ports:
       - "8002:8002"
+    environment:
+      DATABASE_URL: postgresql://product:password@product-db:5432/productdb
+    depends_on:
+      product-db:
+        condition: service_healthy
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   order-service:
     build: ./services/order-service
     ports:
       - "8003:8003"
+    environment:
+      DATABASE_URL: postgresql://order:password@order-db:5432/orderdb
+    depends_on:
+      order-db:
+        condition: service_healthy
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   inventory-service:
     build: ./services/inventory-service
     ports:
       - "8006:8006"
+    environment:
+      DATABASE_URL: postgresql://inventory:password@inventory-db:5432/inventorydb
+    depends_on:
+      inventory-db:
+        condition: service_healthy
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   payment-service:
     build: ./services/payment-service
     ports:
       - "8004:8004"
+    environment:
+      DATABASE_URL: postgresql://payment:password@payment-db:5432/paymentdb
+    depends_on:
+      payment-db:
+        condition: service_healthy
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   notification-service:
     build: ./services/notification-service
     ports:
       - "8005:8005"
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   gateway:
     build: ./gateway
@@ -76,12 +127,93 @@ services:
       - user-db-data:/var/lib/postgresql/data
     networks:
       - backend
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d userdb"]
       interval: 5s
       timeout: 5s
       retries: 10
+
+  product-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: product
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: productdb
+    volumes:
+      - product-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U product -d productdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  order-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orderdb
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order -d orderdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  inventory-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: inventorydb
+    volumes:
+      - inventory-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory -d inventorydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  payment-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: paymentdb
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payment -d paymentdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
   backend:
@@ -89,6 +221,11 @@ networks:
 
 volumes:
   user-db-data:
+  product-db-data:
+  order-db-data:
+  inventory-db-data:
+  payment-db-data:
+  rabbitmq-data:
 
 
 

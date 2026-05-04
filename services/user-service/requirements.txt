@@ -1,9 +1,7 @@
-flask
-flask_sqlalchemy
-flask_jwt_extended
-psycopg2-binary
-bcrypt
-python-dotenv
-gunicorn
-Flask==1.0
-PyJWT==1.7.1
+flask>=2.3.2
+flask_sqlalchemy>=3.0.0
+flask_jwt_extended>=4.5.0
+psycopg2-binary>=2.9.10
+bcrypt>=4.0.0
+python-dotenv>=1.0.0
+gunicorn>=21.2.0

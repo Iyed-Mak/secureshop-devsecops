@@ -1,18 +1,16 @@
-FROM python:3.10-slim
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Prevent Python from writing .pyc files and buffering logs
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Copy package files
+COPY package*.json ./
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN npm install
 
-# Copy app code
-COPY . .
+# Copy source code
+COPY src/ ./src/
 
-EXPOSE 8000
+EXPOSE 8005
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["npm", "start"]

@@ -1,0 +1,267 @@
+name: DevSecOps Security Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+
+  security-scans:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    #################################################
+    # Install Python
+    #################################################
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    #################################################
+    # Install Semgrep
+    #################################################
+
+    - name: Install Semgrep
+      run: pip install semgrep
+
+    #################################################
+    # Run Semgrep SAST
+    #################################################
+
+    - name: Run Semgrep
+      run: |
+        mkdir -p reports/sast
+
+        semgrep scan services/ \
+        --config auto \
+        --config security-tools/sast/.semgrep.yml \
+        --sarif \
+        --output reports/sast/semgrep-results.sarif
+
+    #################################################
+    # Upload SAST SARIF
+    #################################################
+
+    - name: Upload Semgrep SARIF
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: reports/sast/semgrep-results.sarif
+
+    #################################################
+    # Install Bandit
+    #################################################
+
+    - name: Install Bandit
+      run: pip install bandit
+
+    #################################################
+    # Run Bandit SAST
+    #################################################
+
+    - name: Run Bandit
+      run: |
+        mkdir -p reports/sast
+
+        bandit -r services/ \
+        -f json \
+        -o reports/sast/bandit-report.json \
+        --exit-zero
+
+    #################################################
+    # Install OWASP Dependency Check
+    #################################################
+
+    - name: Install Dependency Check
+      run: |
+        wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+        unzip dependency-check-12.1.0-release.zip
+
+    #################################################
+    # Run SCA
+    #################################################
+
+    - name: Run Dependency Check
+      run: |
+        mkdir -p reports/sca
+
+        dependency-check/bin/dependency-check.sh \
+        --scan services \
+        --format SARIF \
+        --out reports/sca/dependency-check-report.sarif \
+        --nvdValidForHours 24
+
+    #################################################
+    # Upload SCA SARIF
+    #################################################
+
+    - name: Upload Dependency Check SARIF
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: reports/sca/dependency-check-report.sarif
+
+    #################################################
+    # Install Trivy
+    #################################################
+
+    - name: Install Trivy
+      run: |
+        sudo apt-get update
+        sudo apt-get install wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install trivy
+
+    #################################################
+    # Run Trivy Container Scan
+    #################################################
+
+    - name: Run Trivy Scan
+      run: |
+        mkdir -p reports/sca
+
+        # Build and scan the gateway image
+        docker build -t secureshop-gateway ./gateway
+        trivy image --format json --output reports/sca/gateway-trivy.json secureshop-gateway
+
+        # Scan base images used in docker-compose
+        trivy image --format json --output reports/sca/postgres-trivy.json postgres:16-alpine
+
+    #################################################
+    # Start Microservices
+    #################################################
+
+    - name: Start Application
+      run: |
+        # Set environment variables for CI
+        export COMPOSE_PROJECT_NAME=secureshop-ci
+        docker compose up -d --build
+        docker compose ps
+
+    #################################################
+    # Wait for Services
+    #################################################
+
+    - name: Wait for Services
+      run: |
+        echo "Waiting for services to be ready..."
+        timeout 120 bash -c '
+        for i in {1..24}; do
+          if curl -f http://localhost/health 2>/dev/null; then
+            echo "Services are ready!"
+            exit 0
+          fi
+          echo "Waiting... ($i/24)"
+          sleep 5
+        done
+        echo "Services failed to start properly"
+        docker compose logs
+        exit 1
+        '
+
+    #################################################
+    # Run OWASP ZAP
+    #################################################
+
+    - name: Run ZAP Scan
+      run: |
+        mkdir -p reports/dast
+
+        echo "Running ZAP security scan..."
+        docker run --network host \
+        -v $(pwd):/zap/wrk/:rw \
+        -t ghcr.io/zaproxy/zaproxy:stable \
+        zap-baseline.py \
+        -t http://localhost \
+        -J reports/dast/zap-report.sarif.json \
+        --auto || echo "ZAP scan completed with warnings"
+
+    #################################################
+    # Upload DAST SARIF
+    #################################################
+
+    - name: Upload ZAP SARIF
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: reports/dast/zap-report.sarif.json
+
+    #################################################
+    # Generate Final Report
+    #################################################
+
+    - name: Generate Final Report
+      if: always()
+      run: |
+        echo "# DevSecOps Security Scan Report" > reports/final-report.md
+        echo "" >> reports/final-report.md
+        echo "## Scan Summary" >> reports/final-report.md
+        echo "- **Date**: $(date)" >> reports/final-report.md
+        echo "- **Commit**: ${GITHUB_SHA}" >> reports/final-report.md
+        echo "- **Branch**: ${GITHUB_REF}" >> reports/final-report.md
+        echo "" >> reports/final-report.md
+        echo "## SAST Results" >> reports/final-report.md
+        echo "### Semgrep" >> reports/final-report.md
+        if [ -f reports/sast/semgrep-results.sarif ]; then
+          echo "✅ Semgrep scan completed" >> reports/final-report.md
+        else
+          echo "❌ Semgrep scan failed" >> reports/final-report.md
+        fi
+        echo "### Bandit" >> reports/final-report.md
+        if [ -f reports/sast/bandit-report.json ]; then
+          echo "✅ Bandit scan completed" >> reports/final-report.md
+        else
+          echo "❌ Bandit scan failed" >> reports/final-report.md
+        fi
+        echo "" >> reports/final-report.md
+        echo "## SCA Results" >> reports/final-report.md
+        if [ -f reports/sca/dependency-check-report.sarif ]; then
+          echo "✅ OWASP Dependency Check completed" >> reports/final-report.md
+        else
+          echo "❌ OWASP Dependency Check failed" >> reports/final-report.md
+        fi
+        if [ -f reports/sca/trivy-scan.json ]; then
+          echo "✅ Trivy container scan completed" >> reports/final-report.md
+        else
+          echo "❌ Trivy container scan failed" >> reports/final-report.md
+        fi
+        echo "" >> reports/final-report.md
+        echo "## DAST Results" >> reports/final-report.md
+        if [ -f reports/dast/zap-report.sarif.json ]; then
+          echo "✅ OWASP ZAP scan completed" >> reports/final-report.md
+        else
+          echo "❌ OWASP ZAP scan failed" >> reports/final-report.md
+        fi
+        echo "" >> reports/final-report.md
+        echo "## Next Steps" >> reports/final-report.md
+        echo "Review the detailed reports in the respective directories for findings and remediation guidance." >> reports/final-report.md
+
+    #################################################
+    # Upload Final Report
+    #################################################
+
+    - name: Upload Final Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-scan-reports
+        path: |
+          reports/
+          !reports/**/*.log

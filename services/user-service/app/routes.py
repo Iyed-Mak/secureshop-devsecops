@@ -95,3 +95,42 @@ def profile():
     return jsonify({
         "user": current_user
     })
+
+
+# Intentionally vulnerable endpoint for DevSecOps testing (SQL Injection)
+@api.route("/vulnerable-search", methods=["GET"])
+def vulnerable_search():
+    """
+    WARNING: This endpoint is intentionally vulnerable to SQL injection for testing purposes.
+    DO NOT use in production!
+    """
+    username = request.args.get("username", "")
+
+    # Vulnerable to SQL injection
+    query = f"SELECT username FROM user WHERE username LIKE '%{username}%'"
+    result = db.session.execute(query).fetchall()
+
+    users = [row[0] for row in result]
+    return jsonify({"users": users})
+
+
+# Another vulnerable endpoint (Command Injection)
+@api.route("/vulnerable-exec", methods=["POST"])
+def vulnerable_exec():
+    """
+    WARNING: This endpoint is intentionally vulnerable to command injection for testing purposes.
+    DO NOT use in production!
+    """
+    import subprocess
+    import os
+
+    cmd = request.json.get("cmd", "")
+
+    # Vulnerable to command injection
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
+
+    return jsonify({
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "returncode": result.returncode
+    })

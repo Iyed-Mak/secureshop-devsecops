@@ -1,0 +1,28 @@
+rules:
+  - id: python-sqli-vulnerable-query
+    patterns:
+      - pattern: "db.session.execute($QUERY).fetchall()"
+    message: "Potential SQL injection when building queries with string concatenation. Use parameterized SQL instead."
+    languages: [python]
+    severity: WARNING
+
+  - id: python-command-injection-shell
+    patterns:
+      - pattern: "subprocess.run($CMD, shell=True, capture_output=True, text=True, cwd=os.getcwd())"
+    message: "Command injection risk from shell=True with user-controlled input. Remove shell=True or sanitize input."
+    languages: [python]
+    severity: ERROR
+
+  - id: nodejs-rabbitmq-queue-send
+    patterns:
+      - pattern: "channel.sendToQueue($QUEUE, Buffer.from(JSON.stringify($MSG)), $OPTS)"
+    message: "Ensure RabbitMQ messages are validated before publishing to avoid injection and serialization issues."
+    languages: [javascript]
+    severity: INFO
+
+  - id: nodejs-express-unsafe-json
+    patterns:
+      - pattern: "app.use(express.json())"
+    message: "Express JSON body parsing is enabled. Ensure payload validation is performed before consuming data."
+    languages: [javascript]
+    severity: INFO
