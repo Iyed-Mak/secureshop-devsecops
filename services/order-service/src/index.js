@@ -1,8 +1,27 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 
 const app = express();
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+const createOrderLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many order creation attempts, please wait a minute.'
+});
+
+app.use(apiLimiter);
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://order:password@localhost:5432/orderdb'
@@ -43,7 +62,7 @@ app.get('/health', (req, res) => {
 });
 
 // Create order
-app.post('/orders', async (req, res) => {
+app.post('/orders', createOrderLimiter, async (req, res) => {
   let { user_id, items, product_id, quantity, price } = req.body;
 
   if (!items) {

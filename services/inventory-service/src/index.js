@@ -1,8 +1,19 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 
 const app = express();
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+app.use(apiLimiter);
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://inventory:password@localhost:5432/inventorydb'

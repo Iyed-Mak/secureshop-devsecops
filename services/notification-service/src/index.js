@@ -1,9 +1,28 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const amqp = require('amqplib');
 const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+const notificationLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many notifications requests, please wait a minute.'
+});
+
+app.use(apiLimiter);
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
 const QUEUE_NAME = 'notifications';
@@ -75,7 +94,7 @@ app.get('/health', (req, res) => {
 });
 
 // API endpoint to send notification directly (for testing)
-app.post('/notify', async (req, res) => {
+app.post('/notify', notificationLimiter, async (req, res) => {
   const { type, email, subject, message } = req.body;
 
   try {
@@ -87,7 +106,7 @@ app.post('/notify', async (req, res) => {
 });
 
 // API endpoint to enqueue notifications via RabbitMQ
-app.post('/publish', async (req, res) => {
+app.post('/publish', notificationLimiter, async (req, res) => {
   const notification = req.body;
 
   if (!channel) {

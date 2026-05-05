@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
 import os
+from slowapi import Limiter
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 from app.database import SessionLocal, engine
 from app import models
 from app.schemas import PaymentCreate, Payment
@@ -9,6 +12,10 @@ from app.schemas import PaymentCreate, Payment
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Payment Service")
+
+limiter = Limiter(key_func=get_remote_address, default_limits=["1000/day", "200/hour"])
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 def get_db():
     db = SessionLocal()
@@ -22,6 +29,7 @@ def health():
     return {"status": "ok", "service": "payment-service"}
 
 @app.post("/payments/", response_model=Payment)
+@limiter.limit("20/minute")
 def create_payment(payment: PaymentCreate, db: Session = Depends(get_db)):
     # Simulate payment processing
     if payment.amount <= 0:

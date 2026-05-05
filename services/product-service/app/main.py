@@ -6,6 +6,9 @@ import os
 import json
 import urllib.request
 import urllib.error
+from slowapi import Limiter
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 from app.database import SessionLocal, engine
 from app import models
 from app.schemas import ProductCreate, Product, CategoryCreate, Category
@@ -17,6 +20,10 @@ with engine.begin() as conn:
 INVENTORY_SERVICE_URL = os.getenv("INVENTORY_SERVICE_URL", "http://inventory-service:8006")
 
 app = FastAPI(title="Product Service")
+
+limiter = Limiter(key_func=get_remote_address, default_limits=["1000/day", "200/hour"])
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 def get_db():
     db = SessionLocal()
@@ -49,6 +56,7 @@ def health():
 
 @app.post("/categories", response_model=Category)
 @app.post("/categories/", response_model=Category)
+@limiter.limit("20/minute")
 def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
     db_category = models.Category(name=category.name, description=category.description)
     db.add(db_category)
@@ -64,6 +72,7 @@ def get_categories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
 
 @app.post("/products", response_model=Product)
 @app.post("/products/", response_model=Product)
+@limiter.limit("20/minute")
 def create_product(product: ProductCreate, db: Session = Depends(get_db)):
     payload = product.model_dump()
     db_product = models.Product(

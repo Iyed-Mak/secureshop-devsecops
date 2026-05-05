@@ -41,12 +41,27 @@ if command_exists trivy; then
     echo "Running Trivy container scanning..."
     # Build images first
     docker-compose build
-    trivy image secureshop-user-service --format json --output reports/sca/user-service-image.json
-    trivy image secureshop-product-service --format json --output reports/sca/product-service-image.json
-    trivy image secureshop-order-service --format json --output reports/sca/order-service-image.json
-    trivy image secureshop-payment-service --format json --output reports/sca/payment-service-image.json
-    trivy image secureshop-notification-service --format json --output reports/sca/notification-service-image.json
-    trivy image secureshop-inventory-service --format json --output reports/sca/inventory-service-image.json
+
+    scan_image() {
+        local service="$1"
+        local output_file="$2"
+        local image_id
+
+        image_id=$(docker-compose images -q "$service" | head -n 1)
+        if [ -z "$image_id" ]; then
+            echo "Could not find built image for $service"
+            return 1
+        fi
+
+        trivy image "$image_id" --format json --output "$output_file"
+    }
+
+    scan_image user-service reports/sca/user-service-image.json
+    scan_image product-service reports/sca/product-service-image.json
+    scan_image order-service reports/sca/order-service-image.json
+    scan_image payment-service reports/sca/payment-service-image.json
+    scan_image notification-service reports/sca/notification-service-image.json
+    scan_image inventory-service reports/sca/inventory-service-image.json
 else
     echo "Trivy not installed. Install from: https://aquasecurity.github.io/trivy/"
 fi
@@ -81,13 +96,24 @@ echo "=== Testing Known Vulnerabilities ==="
 
 echo "Verifying known vulnerable endpoints are removed or blocked..."
 status_search=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/api/user/vulnerable-search?username=admin")
-echo "vulnerable-search endpoint HTTP status: $status_search"
+if [ "$status_search" = "000" ]; then
+    echo "vulnerable-search endpoint HTTP status: $status_search (service not reachable)"
+else
+    echo "vulnerable-search endpoint HTTP status: $status_search"
+fi
 
 status_exec=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost/api/user/vulnerable-exec \
   -H "Content-Type: application/json" \
   -d '{"cmd": "echo VULNERABLE"}')
-echo "vulnerable-exec endpoint HTTP status: $status_exec"
+if [ "$status_exec" = "000" ]; then
+    echo "vulnerable-exec endpoint HTTP status: $status_exec (service not reachable)"
+else
+    echo "vulnerable-exec endpoint HTTP status: $status_exec"
+fi
 
+echo ""
+echo "Note: These endpoint checks require the application to be running and accessible at localhost."
+echo "If testing locally, start the service or use docker-compose up before running this script."
 echo ""
 echo "=== DevSecOps Testing Complete ==="
 echo "Check reports/ directory for detailed results"
