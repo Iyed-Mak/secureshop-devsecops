@@ -21,6 +21,6 @@ app.register_blueprint(api)
 if __name__ == "__main__":
     # Run in development only. Production containers use Gunicorn.
     app.run(
-        host="0.0.0.0",
+        host="127.0.0.1",
         port=8001
     )
