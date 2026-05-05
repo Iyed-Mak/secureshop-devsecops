@@ -4,8 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 import os
 import json
-import urllib.request
-import urllib.error
+import requests
 from slowapi import Limiter
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
@@ -35,18 +34,15 @@ def get_db():
 
 def seed_inventory(product_id: int, quantity: int):
     try:
-        payload = json.dumps({"quantity": quantity}).encode("utf-8")
-        req = urllib.request.Request(
+        payload = {"quantity": quantity}
+        response = requests.put(
             f"{INVENTORY_SERVICE_URL}/inventory/{product_id}",
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="PUT"
+            json=payload,
+            timeout=5
         )
-        with urllib.request.urlopen(req, timeout=5) as resp:
-            return resp.read().decode("utf-8")
-    except urllib.error.HTTPError as exc:
-        print(f"Inventory update HTTP error: {exc.code} {exc.reason}")
-    except Exception as exc:
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as exc:
         print(f"Inventory update failure: {exc}")
 
 

@@ -1,0 +1,1097 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2026-05-05T10:41:12.029626322+01:00",
+  "ArtifactName": "42ae847eecbfe9c93471946fcfdb9db57e934042a99da42140f94f2cff009df9",
+  "ArtifactType": "container_image",
+  "Metadata": {
+    "Size": 152729600,
+    "OS": {
+      "Family": "alpine",
+      "Name": "3.23.4"
+    },
+    "ImageID": "sha256:42ae847eecbfe9c93471946fcfdb9db57e934042a99da42140f94f2cff009df9",
+    "DiffIDs": [
+      "sha256:29df493baa13de438d6d2ece3a8333032e0b7b9b9d8cce4ee82194da255f61e1",
+      "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc",
+      "sha256:e10358715ead9b47009dd04bcd77ac1c8e247f7249ab06517ff913c473a8e38e",
+      "sha256:afa543f85b4685a84338df3e2c429edca49bb372b0f49e0c5cc9724c820ad094",
+      "sha256:b4428a7b18449ce9dd9ca6ee9813fcf771b3955f99a2709447039ffa9e426651",
+      "sha256:db769dbdd57339272c03a90cdfc9dcd29eabb41a074bfc1ae0b834500754d07a",
+      "sha256:557036f70b015d33aedaf73e743c22c7d4da524f4260e304b8589d17b4762df1",
+      "sha256:0fd209a28b15a63b736174aa28ac3f836b7437fe75c58bb1d8ad659b70ba9c00",
+      "sha256:a8330a0767785c33480b4e2c4853bc10dddaced098d57c8d0a0f480c7c3473f9",
+      "sha256:9f2974c4f8e705d92e73b306eeef74a03eab7cea2fd534923ac2ac8f8fb53047"
+    ],
+    "RepoTags": [
+      "secureshop-devsecops-order-service:latest"
+    ],
+    "ImageConfig": {
+      "architecture": "amd64",
+      "created": "2026-05-05T09:01:19.001243923+01:00",
+      "history": [
+        {
+          "created": "2026-04-15T20:01:40Z",
+          "created_by": "ADD alpine-minirootfs-3.23.4-x86_64.tar.gz / # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-04-15T20:01:40Z",
+          "created_by": "CMD [\"/bin/sh\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-04-15T20:46:47Z",
+          "created_by": "ENV NODE_VERSION=20.20.2",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-04-15T20:46:47Z",
+          "created_by": "RUN /bin/sh -c addgroup -g 1000 node     \u0026\u0026 adduser -u 1000 -G node -s /bin/sh -D node     \u0026\u0026 apk add --no-cache         libstdc++     \u0026\u0026 apk add --no-cache --virtual .build-deps         curl     \u0026\u0026 ARCH= OPENSSL_ARCH='linux*' \u0026\u0026 alpineArch=\"$(apk --print-arch)\"       \u0026\u0026 case \"${alpineArch##*-}\" in         x86_64) ARCH='x64' CHECKSUM=\"2b51a5388f6aaf8e2af65fe3bad6114db0ebd81a1ae1250b1de0cbf034b10c5d\" OPENSSL_ARCH=linux-x86_64;;         x86) OPENSSL_ARCH=linux-elf;;         aarch64) OPENSSL_ARCH=linux-aarch64;;         arm*) OPENSSL_ARCH=linux-armv4;;         ppc64le) OPENSSL_ARCH=linux-ppc64le;;         s390x) OPENSSL_ARCH=linux-s390x;;         *) ;;       esac   \u0026\u0026 if [ -n \"${CHECKSUM}\" ]; then     set -eu;     curl -fsSLO --compressed \"https://unofficial-builds.nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz\";     echo \"$CHECKSUM  node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz\" | sha256sum -c -       \u0026\u0026 tar -xJf \"node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz\" -C /usr/local --strip-components=1 --no-same-owner       \u0026\u0026 ln -s /usr/local/bin/node /usr/local/bin/nodejs;   else     echo \"Building from source\"     \u0026\u0026 apk add --no-cache --virtual .build-deps-full         binutils-gold         g++         gcc         gnupg         libgcc         linux-headers         make         python3         py-setuptools     \u0026\u0026 export GNUPGHOME=\"$(mktemp -d)\"     \u0026\u0026 for key in       5BE8A3F6C8A5C01D106C0AD820B1A390B168D356       DD792F5973C6DE52C432CBDAC77ABFA00DDBF2B7       CC68F5A3106FF448322E48ED27F5E38D5B0A215F       8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600       890C08DB8579162FEE0DF9DB8BEAB4DFCF555EF4       C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C       108F52B48DB57BB0CC439B2997B01419BD92F80A       A363A499291CBBC940DD62E41F10027AF002F8B0     ; do       { gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys \"$key\" \u0026\u0026 gpg --batch --fingerprint \"$key\"; } ||       { gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \"$key\" \u0026\u0026 gpg --batch --fingerprint \"$key\"; } ;     done     \u0026\u0026 curl -fsSLO --compressed \"https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.xz\"     \u0026\u0026 curl -fsSLO --compressed \"https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc\"     \u0026\u0026 gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc     \u0026\u0026 gpgconf --kill all     \u0026\u0026 rm -rf \"$GNUPGHOME\"     \u0026\u0026 grep \" node-v$NODE_VERSION.tar.xz\\$\" SHASUMS256.txt | sha256sum -c -     \u0026\u0026 tar -xf \"node-v$NODE_VERSION.tar.xz\"     \u0026\u0026 cd \"node-v$NODE_VERSION\"     \u0026\u0026 ./configure     \u0026\u0026 make -j$(getconf _NPROCESSORS_ONLN) V=     \u0026\u0026 make install     \u0026\u0026 apk del .build-deps-full     \u0026\u0026 cd ..     \u0026\u0026 rm -Rf \"node-v$NODE_VERSION\"     \u0026\u0026 rm \"node-v$NODE_VERSION.tar.xz\" SHASUMS256.txt.asc SHASUMS256.txt;   fi   \u0026\u0026 rm -f \"node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz\"   \u0026\u0026 find /usr/local/include/node/openssl/archs -mindepth 1 -maxdepth 1 ! -name \"$OPENSSL_ARCH\" -exec rm -rf {} \\;   \u0026\u0026 apk del .build-deps   \u0026\u0026 node --version   \u0026\u0026 npm --version   \u0026\u0026 rm -rf /tmp/* # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-04-15T20:46:47Z",
+          "created_by": "ENV YARN_VERSION=1.22.22",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-04-15T20:46:50Z",
+          "created_by": "RUN /bin/sh -c apk add --no-cache --virtual .build-deps-yarn curl gnupg tar   \u0026\u0026 export GNUPGHOME=\"$(mktemp -d)\"   \u0026\u0026 for key in     6A010C5166006599AA17F08146C2130DFD2497F5   ; do     { gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys \"$key\" \u0026\u0026 gpg --batch --fingerprint \"$key\"; } ||     { gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \"$key\" \u0026\u0026 gpg --batch --fingerprint \"$key\"; } ;   done   \u0026\u0026 curl -fsSLO --compressed \"https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz\"   \u0026\u0026 curl -fsSLO --compressed \"https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz.asc\"   \u0026\u0026 gpg --batch --verify yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz   \u0026\u0026 gpgconf --kill all   \u0026\u0026 rm -rf \"$GNUPGHOME\"   \u0026\u0026 mkdir -p /opt   \u0026\u0026 tar -xzf yarn-v$YARN_VERSION.tar.gz -C /opt/   \u0026\u0026 ln -s /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn   \u0026\u0026 ln -s /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg   \u0026\u0026 rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz   \u0026\u0026 apk del .build-deps-yarn   \u0026\u0026 yarn --version   \u0026\u0026 rm -rf /tmp/* # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-04-15T20:46:50Z",
+          "created_by": "COPY docker-entrypoint.sh /usr/local/bin/ # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-04-15T20:46:50Z",
+          "created_by": "ENTRYPOINT [\"docker-entrypoint.sh\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-04-15T20:46:50Z",
+          "created_by": "CMD [\"node\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-05-05T08:01:04Z",
+          "created_by": "RUN /bin/sh -c addgroup -g 1001 -S appgroup \u0026\u0026 adduser -S appuser -u 1001 # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:05Z",
+          "created_by": "WORKDIR /app",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:05Z",
+          "created_by": "COPY package*.json ./ # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:13Z",
+          "created_by": "RUN /bin/sh -c npm install # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:13Z",
+          "created_by": "COPY . . # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:19Z",
+          "created_by": "RUN /bin/sh -c chown -R appuser:appgroup /app # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-05-05T08:01:19Z",
+          "created_by": "USER appuser",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-05-05T08:01:19Z",
+          "created_by": "EXPOSE [8003/tcp]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-05-05T08:01:19Z",
+          "created_by": "CMD [\"node\" \"src/index.js\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        }
+      ],
+      "os": "linux",
+      "rootfs": {
+        "type": "layers",
+        "diff_ids": [
+          "sha256:29df493baa13de438d6d2ece3a8333032e0b7b9b9d8cce4ee82194da255f61e1",
+          "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc",
+          "sha256:e10358715ead9b47009dd04bcd77ac1c8e247f7249ab06517ff913c473a8e38e",
+          "sha256:afa543f85b4685a84338df3e2c429edca49bb372b0f49e0c5cc9724c820ad094",
+          "sha256:b4428a7b18449ce9dd9ca6ee9813fcf771b3955f99a2709447039ffa9e426651",
+          "sha256:db769dbdd57339272c03a90cdfc9dcd29eabb41a074bfc1ae0b834500754d07a",
+          "sha256:557036f70b015d33aedaf73e743c22c7d4da524f4260e304b8589d17b4762df1",
+          "sha256:0fd209a28b15a63b736174aa28ac3f836b7437fe75c58bb1d8ad659b70ba9c00",
+          "sha256:a8330a0767785c33480b4e2c4853bc10dddaced098d57c8d0a0f480c7c3473f9",
+          "sha256:9f2974c4f8e705d92e73b306eeef74a03eab7cea2fd534923ac2ac8f8fb53047"
+        ]
+      },
+      "config": {
+        "Cmd": [
+          "node",
+          "src/index.js"
+        ],
+        "Entrypoint": [
+          "docker-entrypoint.sh"
+        ],
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "NODE_VERSION=20.20.2",
+          "YARN_VERSION=1.22.22"
+        ],
+        "Labels": {
+          "com.docker.compose.project": "secureshop-devsecops",
+          "com.docker.compose.service": "order-service",
+          "com.docker.compose.version": "2.40.3"
+        },
+        "User": "appuser",
+        "WorkingDir": "/app",
+        "ExposedPorts": {
+          "8003/tcp": {}
+        },
+        "ArgsEscaped": true
+      }
+    },
+    "Layers": [
+      {
+        "Size": 8732160,
+        "DiffID": "sha256:29df493baa13de438d6d2ece3a8333032e0b7b9b9d8cce4ee82194da255f61e1"
+      },
+      {
+        "Size": 124029440,
+        "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+      },
+      {
+        "Size": 5389312,
+        "DiffID": "sha256:e10358715ead9b47009dd04bcd77ac1c8e247f7249ab06517ff913c473a8e38e"
+      },
+      {
+        "Size": 3584,
+        "DiffID": "sha256:afa543f85b4685a84338df3e2c429edca49bb372b0f49e0c5cc9724c820ad094"
+      },
+      {
+        "Size": 10752,
+        "DiffID": "sha256:b4428a7b18449ce9dd9ca6ee9813fcf771b3955f99a2709447039ffa9e426651"
+      },
+      {
+        "Size": 1536,
+        "DiffID": "sha256:db769dbdd57339272c03a90cdfc9dcd29eabb41a074bfc1ae0b834500754d07a"
+      },
+      {
+        "Size": 48640,
+        "DiffID": "sha256:557036f70b015d33aedaf73e743c22c7d4da524f4260e304b8589d17b4762df1"
+      },
+      {
+        "Size": 7389184,
+        "DiffID": "sha256:0fd209a28b15a63b736174aa28ac3f836b7437fe75c58bb1d8ad659b70ba9c00"
+      },
+      {
+        "Size": 1625088,
+        "DiffID": "sha256:a8330a0767785c33480b4e2c4853bc10dddaced098d57c8d0a0f480c7c3473f9"
+      },
+      {
+        "Size": 5499904,
+        "DiffID": "sha256:9f2974c4f8e705d92e73b306eeef74a03eab7cea2fd534923ac2ac8f8fb53047"
+      }
+    ]
+  },
+  "Results": [
+    {
+      "Target": "42ae847eecbfe9c93471946fcfdb9db57e934042a99da42140f94f2cff009df9 (alpine 3.23.4)",
+      "Class": "os-pkgs",
+      "Type": "alpine"
+    },
+    {
+      "Target": "Node.js",
+      "Class": "lang-pkgs",
+      "Type": "node-pkg",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2026-33750",
+          "PkgID": "brace-expansion@2.0.1",
+          "PkgName": "brace-expansion",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/brace-expansion@2.0.1",
+            "UID": "5312e61c89337017"
+          },
+          "InstalledVersion": "2.0.1",
+          "FixedVersion": "5.0.5, 3.0.2, 2.0.3, 1.1.13",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-33750",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "brace-expansion: brace-expansion: Denial of Service via zero step value in brace pattern",
+          "Description": "The brace-expansion library generates arbitrary strings containing a common prefix and suffix. Prior to versions 5.0.5, 3.0.2, 2.0.3, and 1.1.13, a brace pattern with a zero step value (e.g., `{1..2..0}`) causes the sequence generation loop to run indefinitely, making the process hang for seconds and allocate heaps of memory. Versions 5.0.5, 3.0.2, 2.0.3, and 1.1.13 fix the issue. As a workaround, sanitize strings passed to `expand()` to ensure a step value of `0` is not used.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "ghsa": 2,
+            "nvd": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+              "V3Score": 6.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-33750",
+            "https://github.com/juliangruber/brace-expansion",
+            "https://github.com/juliangruber/brace-expansion/blob/daa71bcb4a30a2df9bcb7f7b8daaf2ab30e5794a/src/index.ts#L107-L113",
+            "https://github.com/juliangruber/brace-expansion/blob/daa71bcb4a30a2df9bcb7f7b8daaf2ab30e5794a/src/index.ts#L184",
+            "https://github.com/juliangruber/brace-expansion/commit/311ac0d54994158c0a384e286a7d6cbb17ee8ed5",
+            "https://github.com/juliangruber/brace-expansion/commit/7fd684f89fdde3549563d0a6522226a9189472a2",
+            "https://github.com/juliangruber/brace-expansion/commit/b9cacd9e55e7a1fa588fe4b7bb1159d52f1d902a",
+            "https://github.com/juliangruber/brace-expansion/issues/98",
+            "https://github.com/juliangruber/brace-expansion/pull/95",
+            "https://github.com/juliangruber/brace-expansion/pull/96",
+            "https://github.com/juliangruber/brace-expansion/pull/97",
+            "https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-f886-m6hf-6m8v",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-33750",
+            "https://www.cve.org/CVERecord?id=CVE-2026-33750"
+          ],
+          "PublishedDate": "2026-03-27T15:16:57.297Z",
+          "LastModifiedDate": "2026-04-22T14:23:19.11Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5889",
+          "PkgID": "brace-expansion@2.0.1",
+          "PkgName": "brace-expansion",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/brace-expansion@2.0.1",
+            "UID": "5312e61c89337017"
+          },
+          "InstalledVersion": "2.0.1",
+          "FixedVersion": "2.0.2, 1.1.12, 3.0.1, 4.0.1",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-5889",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "brace-expansion: juliangruber brace-expansion index.js expand redos",
+          "Description": "A vulnerability was found in juliangruber brace-expansion up to 1.1.11/2.0.1/3.0.0/4.0.0. It has been rated as problematic. Affected by this issue is the function expand of the file index.js. The manipulation leads to inefficient regular expression complexity. The attack may be launched remotely. The complexity of an attack is rather high. The exploitation is known to be difficult. The exploit has been disclosed to the public and may be used. Upgrading to version 1.1.12, 2.0.2, 3.0.1 and 4.0.1 is able to address this issue. The name of the patch is a5b98a4f30d7813266b221435e1eaaf25a1b0ac5. It is recommended to upgrade the affected component.",
+          "Severity": "LOW",
+          "CweIDs": [
+            "CWE-400",
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "amazon": 3,
+            "cbl-mariner": 1,
+            "ghsa": 1,
+            "redhat": 1
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L",
+              "V40Vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:L/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N/E:P",
+              "V3Score": 3.1,
+              "V40Score": 1.3
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L",
+              "V3Score": 3.1
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2025-5889",
+            "https://gist.github.com/mmmsssttt404/37a40ce7d6e5ca604858fe30814d9466",
+            "https://github.com/juliangruber/brace-expansion",
+            "https://github.com/juliangruber/brace-expansion/commit/0b6a9781e18e9d2769bb2931f4856d1360243ed2",
+            "https://github.com/juliangruber/brace-expansion/commit/15f9b3c75ebf5988198241fecaebdc45eff28a9f",
+            "https://github.com/juliangruber/brace-expansion/commit/36603d5f3599a37af9e85eda30acd7d28599c36e",
+            "https://github.com/juliangruber/brace-expansion/commit/c3c73c8b088defc70851843be88ccc3af08e7217",
+            "https://github.com/juliangruber/brace-expansion/pull/65/commits/a5b98a4f30d7813266b221435e1eaaf25a1b0ac5",
+            "https://github.com/juliangruber/brace-expansion/releases/tag/v4.0.1",
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-5889",
+            "https://vuldb.com/?ctiid.311660",
+            "https://vuldb.com/?id.311660",
+            "https://vuldb.com/?submit.585717",
+            "https://www.cve.org/CVERecord?id=CVE-2025-5889"
+          ],
+          "PublishedDate": "2025-06-09T19:15:25.46Z",
+          "LastModifiedDate": "2026-04-29T01:00:01.613Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-21538",
+          "PkgID": "cross-spawn@7.0.3",
+          "PkgName": "cross-spawn",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/cross-spawn/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/cross-spawn@7.0.3",
+            "UID": "480da04347e2e299"
+          },
+          "InstalledVersion": "7.0.3",
+          "FixedVersion": "7.0.5, 6.0.6",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-21538",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "cross-spawn: regular expression denial of service",
+          "Description": "Versions of the package cross-spawn before 6.0.6, from 7.0.0 and before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "amazon": 2,
+            "azure": 3,
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 1
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V40Vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:P",
+              "V3Score": 7.5,
+              "V40Score": 7.7
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:N/I:N/A:H",
+              "V3Score": 4.4
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-21538",
+            "https://github.com/moxystudio/node-cross-spawn",
+            "https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff",
+            "https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f",
+            "https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd",
+            "https://github.com/moxystudio/node-cross-spawn/issues/165",
+            "https://github.com/moxystudio/node-cross-spawn/pull/160",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-21538",
+            "https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349",
+            "https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230",
+            "https://www.cve.org/CVERecord?id=CVE-2024-21538"
+          ],
+          "PublishedDate": "2024-11-08T05:15:06.453Z",
+          "LastModifiedDate": "2026-04-15T00:35:42.02Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-24001",
+          "PkgID": "diff@5.2.0",
+          "PkgName": "diff",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/diff/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/diff@5.2.0",
+            "UID": "f0e905df756eae3a"
+          },
+          "InstalledVersion": "5.2.0",
+          "FixedVersion": "8.0.3, 5.2.2, 4.0.4, 3.5.1",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-24001",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "jsdiff: denial of service vulnerability in parsePatch and applyPatch",
+          "Description": "jsdiff is a JavaScript text differencing implementation. Prior to versions 8.0.3, 5.2.2, 4.0.4, and 3.5.1, attempting to parse a patch whose filename headers contain the line break characters `\\r`, `\\u2028`, or `\\u2029` can cause the `parsePatch` method to enter an infinite loop. It then consumes memory without limit until the process crashes due to running out of memory. Applications are therefore likely to be vulnerable to a denial-of-service attack if they call `parsePatch` with a user-provided patch as input. A large payload is not needed to trigger the vulnerability, so size limits on user input do not provide any protection. Furthermore, some applications may be vulnerable even when calling `parsePatch` on a patch generated by the application itself if the user is nonetheless able to control the filename headers (e.g. by directly providing the filenames of the files to be diffed). The `applyPatch` method is similarly affected if (and only if) called with a string representation of a patch as an argument, since under the hood it parses that string using `parsePatch`. Other methods of the library are unaffected. Finally, a second and lesser interdependent bug - a ReDOS - also exhibits when those same line break characters are present in a patch's *patch* header (also known as its \"leading garbage\"). A maliciously-crafted patch header of length *n* can take `parsePatch` O(*n*³) time to parse. Versions 8.0.3, 5.2.2, 4.0.4, and 3.5.1 contain a fix. As a workaround, do not attempt to parse patches that contain any of these characters: `\\r`, `\\u2028`, or `\\u2029`.",
+          "Severity": "LOW",
+          "CweIDs": [
+            "CWE-400",
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "ghsa": 1,
+            "nvd": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V40Vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N/E:U",
+              "V40Score": 2.7
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-24001",
+            "https://github.com/kpdecker/jsdiff",
+            "https://github.com/kpdecker/jsdiff/commit/15a1585230748c8ae6f8274c202e0c87309142f5",
+            "https://github.com/kpdecker/jsdiff/issues/653",
+            "https://github.com/kpdecker/jsdiff/pull/649",
+            "https://github.com/kpdecker/jsdiff/security/advisories/GHSA-73rr-hh4g-fpgx",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-24001",
+            "https://www.cve.org/CVERecord?id=CVE-2026-24001"
+          ],
+          "PublishedDate": "2026-01-22T03:15:47.627Z",
+          "LastModifiedDate": "2026-03-04T15:23:41.347Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-64756",
+          "PkgID": "glob@10.4.2",
+          "PkgName": "glob",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/glob/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/glob@10.4.2",
+            "UID": "ceceb363d6e80bd3"
+          },
+          "InstalledVersion": "10.4.2",
+          "FixedVersion": "11.1.0, 10.5.0",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-64756",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "glob: glob: Command Injection Vulnerability via Malicious Filenames",
+          "Description": "Glob matches files using patterns the shell uses. Starting in version 10.2.0 and prior to versions 10.5.0 and 11.1.0, the glob CLI contains a command injection vulnerability in its -c/--cmd option that allows arbitrary command execution when processing files with malicious names. When glob -c \u003ccommand\u003e \u003cpatterns\u003e are used, matched filenames are passed to a shell with shell: true, enabling shell metacharacters in filenames to trigger command injection and achieve arbitrary code execution under the user or CI account privileges. This issue has been patched in versions 10.5.0 and 11.1.0.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-78"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2025-64756",
+            "https://github.com/isaacs/node-glob",
+            "https://github.com/isaacs/node-glob/commit/1e4e297342a09f2aa0ced87fcd4a70ddc325d75f",
+            "https://github.com/isaacs/node-glob/commit/47473c046b91c67269df7a66eab782a6c2716146",
+            "https://github.com/isaacs/node-glob/security/advisories/GHSA-5j98-mcp5-4vw2",
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-64756",
+            "https://www.cve.org/CVERecord?id=CVE-2025-64756"
+          ],
+          "PublishedDate": "2025-11-17T18:15:58.27Z",
+          "LastModifiedDate": "2025-12-02T19:34:43.27Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-26996",
+          "PkgID": "minimatch@9.0.5",
+          "PkgName": "minimatch",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/minimatch/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/minimatch@9.0.5",
+            "UID": "9164b23f843c2453"
+          },
+          "InstalledVersion": "9.0.5",
+          "FixedVersion": "10.2.1, 9.0.6, 8.0.5, 7.4.7, 6.2.1, 5.1.7, 4.2.4, 3.1.3",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-26996",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "minimatch: minimatch: Denial of Service via specially crafted glob patterns",
+          "Description": "minimatch is a minimal matching utility for converting glob expressions into JavaScript RegExp objects. Versions 10.2.0 and below are vulnerable to Regular Expression Denial of Service (ReDoS) when a glob pattern contains many consecutive * wildcards followed by a literal character that doesn't appear in the test string. Each * compiles to a separate [^/]*? regex group, and when the match fails, V8's regex engine backtracks exponentially across all possible splits. The time complexity is O(4^N) where N is the number of * characters. With N=15, a single minimatch() call takes ~2 seconds. With N=34, it hangs effectively forever. Any application that passes user-controlled strings to minimatch() as the pattern argument is vulnerable to DoS. This issue has been fixed in version 10.2.1.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "ghsa": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "redhat": 2,
+            "rocky": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V40Vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+              "V40Score": 8.7
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2026:7896",
+            "https://access.redhat.com/security/cve/CVE-2026-26996",
+            "https://bugzilla.redhat.com/2441268",
+            "https://bugzilla.redhat.com/2442922",
+            "https://bugzilla.redhat.com/2448754",
+            "https://bugzilla.redhat.com/2453151",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2441268",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2442922",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2448754",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2453151",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-21710",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-26996",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-27135",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-27904",
+            "https://errata.almalinux.org/9/ALSA-2026-7896.html",
+            "https://errata.rockylinux.org/RLSA-2026:7896",
+            "https://github.com/isaacs/minimatch",
+            "https://github.com/isaacs/minimatch/commit/2e111f3a79abc00fa73110195de2c0f2351904f5",
+            "https://github.com/isaacs/minimatch/security/advisories/GHSA-3ppc-4f35-3m26",
+            "https://linux.oracle.com/cve/CVE-2026-26996.html",
+            "https://linux.oracle.com/errata/ELSA-2026-8339.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-26996",
+            "https://www.cve.org/CVERecord?id=CVE-2026-26996"
+          ],
+          "PublishedDate": "2026-02-20T03:16:01.62Z",
+          "LastModifiedDate": "2026-03-06T21:32:10.65Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27903",
+          "PkgID": "minimatch@9.0.5",
+          "PkgName": "minimatch",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/minimatch/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/minimatch@9.0.5",
+            "UID": "9164b23f843c2453"
+          },
+          "InstalledVersion": "9.0.5",
+          "FixedVersion": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.3",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-27903",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "minimatch: minimatch: Denial of Service due to unbounded recursive backtracking via crafted glob patterns",
+          "Description": "minimatch is a minimal matching utility for converting glob expressions into JavaScript RegExp objects. Prior to version 10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, and 3.1.3, `matchOne()` performs unbounded recursive backtracking when a glob pattern contains multiple non-adjacent `**` (GLOBSTAR) segments and the input path does not match. The time complexity is O(C(n, k)) -- binomial -- where `n` is the number of path segments and `k` is the number of globstars. With k=11 and n=30, a call to the default `minimatch()` API stalls for roughly 5 seconds. With k=13, it exceeds 15 seconds. No memoization or call budget exists to bound this behavior. Any application where an attacker can influence the glob pattern passed to `minimatch()` is vulnerable. The realistic attack surface includes build tools and task runners that accept user-supplied glob arguments (ESLint, Webpack, Rollup config), multi-tenant systems where one tenant configures glob-based rules that run in a shared process, admin or developer interfaces that accept ignore-rule or filter configuration as globs, and CI/CD pipelines that evaluate user-submitted config files containing glob patterns. An attacker who can place a crafted pattern into any of these paths can stall the Node.js event loop for tens of seconds per invocation. The pattern is 56 bytes for a 5-second stall and does not require authentication in contexts where pattern input is part of the feature. Versions 10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, and 3.1.3 fix the issue.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-407"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 5.9
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-27903",
+            "https://github.com/isaacs/minimatch",
+            "https://github.com/isaacs/minimatch/commit/0bf499aa45f5059b56809cc3b75ff3eafeb8d748",
+            "https://github.com/isaacs/minimatch/security/advisories/GHSA-7r86-cg39-jmmj",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-27903",
+            "https://www.cve.org/CVERecord?id=CVE-2026-27903"
+          ],
+          "PublishedDate": "2026-02-26T02:16:21.353Z",
+          "LastModifiedDate": "2026-02-27T17:21:22.37Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27904",
+          "PkgID": "minimatch@9.0.5",
+          "PkgName": "minimatch",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/minimatch/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/minimatch@9.0.5",
+            "UID": "9164b23f843c2453"
+          },
+          "InstalledVersion": "9.0.5",
+          "FixedVersion": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.4",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-27904",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "minimatch: Minimatch: Denial of Service via catastrophic backtracking in glob expressions",
+          "Description": "minimatch is a minimal matching utility for converting glob expressions into JavaScript RegExp objects. Prior to version 10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, and 3.1.4, nested `*()` extglobs produce regexps with nested unbounded quantifiers (e.g. `(?:(?:a|b)*)*`), which exhibit catastrophic backtracking in V8. With a 12-byte pattern `*(*(*(a|b)))` and an 18-byte non-matching input, `minimatch()` stalls for over 7 seconds. Adding a single nesting level or a few input characters pushes this to minutes. This is the most severe finding: it is triggered by the default `minimatch()` API with no special options, and the minimum viable pattern is only 12 bytes. The same issue affects `+()` extglobs equally. Versions 10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, and 3.1.4 fix the issue.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "ghsa": 3,
+            "oracle-oval": 3,
+            "redhat": 2,
+            "rocky": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2026:7896",
+            "https://access.redhat.com/security/cve/CVE-2026-27904",
+            "https://bugzilla.redhat.com/2441268",
+            "https://bugzilla.redhat.com/2442922",
+            "https://bugzilla.redhat.com/2448754",
+            "https://bugzilla.redhat.com/2453151",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2441268",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2442922",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2448754",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2453151",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-21710",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-26996",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-27135",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-27904",
+            "https://errata.almalinux.org/9/ALSA-2026-7896.html",
+            "https://errata.rockylinux.org/RLSA-2026:7896",
+            "https://github.com/isaacs/minimatch",
+            "https://github.com/isaacs/minimatch/commit/11d0df6165d15a955462316b26d52e5efae06fce",
+            "https://github.com/isaacs/minimatch/security/advisories/GHSA-23c5-xmqv-rm74",
+            "https://linux.oracle.com/cve/CVE-2026-27904.html",
+            "https://linux.oracle.com/errata/ELSA-2026-8339.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-27904",
+            "https://www.cve.org/CVERecord?id=CVE-2026-27904"
+          ],
+          "PublishedDate": "2026-02-26T02:16:21.76Z",
+          "LastModifiedDate": "2026-02-27T17:16:23.773Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-23745",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.3",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-23745",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "node-tar: tar: node-tar: Arbitrary file overwrite and symlink poisoning via unsanitized linkpaths in archives",
+          "Description": "node-tar is a Tar for Node.js. The node-tar library (\u003c= 7.5.2) fails to sanitize the linkpath of Link (hardlink) and SymbolicLink entries when preservePaths is false (the default secure behavior). This allows malicious archives to bypass the extraction root restriction, leading to Arbitrary File Overwrite via hardlinks and Symlink Poisoning via absolute symlink targets. This vulnerability is fixed in 7.5.3.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-22"
+          ],
+          "VendorSeverity": {
+            "amazon": 3,
+            "ghsa": 3,
+            "nvd": 2,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V40Vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:A/VC:H/VI:L/VA:N/SC:H/SI:L/SA:N",
+              "V40Score": 8.2
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N",
+              "V3Score": 6.1
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H",
+              "V3Score": 8.2
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-23745",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/340eb285b6d986e91969a1170d7fe9b0face405e",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-8qq5-rm4j-mr97",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-23745",
+            "https://www.cve.org/CVERecord?id=CVE-2026-23745"
+          ],
+          "PublishedDate": "2026-01-16T22:16:26.83Z",
+          "LastModifiedDate": "2026-02-18T16:20:07.823Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-23950",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.4",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-23950",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "node-tar: tar: node-tar: Arbitrary file overwrite via Unicode path collision race condition",
+          "Description": "node-tar,a Tar for Node.js, has a race condition vulnerability in versions up to and including 7.5.3. This is due to an incomplete handling of Unicode path collisions in the `path-reservations` system. On case-insensitive or normalization-insensitive filesystems (such as macOS APFS, In which it has been tested), the library fails to lock colliding paths (e.g., `ß` and `ss`), allowing them to be processed in parallel. This bypasses the library's internal concurrency safeguards and permits Symlink Poisoning attacks via race conditions. The library uses a `PathReservations` system to ensure that metadata checks and file operations for the same path are serialized. This prevents race conditions where one entry might clobber another concurrently. This is a Race Condition which enables Arbitrary File Overwrite. This vulnerability affects users and systems using node-tar on macOS (APFS/HFS+). Because of using `NFD` Unicode normalization (in which `ß` and `ss` are different), conflicting paths do not have their order properly preserved under filesystems that ignore Unicode normalization (e.g., APFS (in which `ß` causes an inode collision with `ss`)). This enables an attacker to circumvent internal parallelization locks (`PathReservations`) using conflicting filenames within a malicious tar archive. The patch in version 7.5.4 updates `path-reservations.js` to use a normalization form that matches the target filesystem's behavior (e.g., `NFKD`), followed by first `toLocaleLowerCase('en')` and then `toLocaleUpperCase('en')`. As a workaround, users who cannot upgrade promptly, and who are programmatically using `node-tar` to extract arbitrary tarball data should filter out all `SymbolicLink` entries (as npm does) to defend against arbitrary file writes via this file system entry name collision issue.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-176",
+            "CWE-352",
+            "CWE-367"
+          ],
+          "VendorSeverity": {
+            "amazon": 3,
+            "ghsa": 3,
+            "nvd": 2,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:H/A:L",
+              "V3Score": 8.8
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+              "V3Score": 5.9
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:H/A:L",
+              "V3Score": 8.8
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-23950",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/3b1abfae650056edfabcbe0a0df5954d390521e6",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+            "https://www.cve.org/CVERecord?id=CVE-2026-23950"
+          ],
+          "PublishedDate": "2026-01-20T01:15:57.87Z",
+          "LastModifiedDate": "2026-02-18T15:50:29.91Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-24842",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.7",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-24842",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "node-tar: tar: node-tar: Arbitrary file creation via path traversal bypass in hardlink security check",
+          "Description": "node-tar,a Tar for Node.js, contains a vulnerability in versions prior to 7.5.7 where the security check for hardlink entries uses different path resolution semantics than the actual hardlink creation logic. This mismatch allows an attacker to craft a malicious TAR archive that bypasses path traversal protections and creates hardlinks to arbitrary files outside the extraction directory. Version 7.5.7 contains a fix for the issue.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-22",
+            "CWE-59"
+          ],
+          "VendorSeverity": {
+            "amazon": 3,
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N",
+              "V3Score": 8.2
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N",
+              "V3Score": 8.2
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-24842",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/f4a7aa9bc3d717c987fdf1480ff7a64e87ffdb46",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-34x7-hfp2-rc4v",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-24842",
+            "https://www.cve.org/CVERecord?id=CVE-2026-24842"
+          ],
+          "PublishedDate": "2026-01-28T01:16:14.947Z",
+          "LastModifiedDate": "2026-02-02T14:30:10.89Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-26960",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.8",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-26960",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "node-tar: node-tar: Arbitrary file read/write via malicious archive hardlink creation",
+          "Description": "node-tar is a full-featured Tar for Node.js. When using default options in versions 7.5.7 and below, an attacker-controlled archive can create a hardlink inside the extraction directory that points to a file outside the extraction root, enabling arbitrary file read and write as the extracting user. Severity is high because the primitive bypasses path protections and turns archive extraction into a direct filesystem access primitive. This issue has been fixed in version 7.5.8.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-22"
+          ],
+          "VendorSeverity": {
+            "amazon": 3,
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N",
+              "V3Score": 7.1
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N",
+              "V3Score": 7.1
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N",
+              "V3Score": 7.1
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-26960",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/2cb1120bcefe28d7ecc719b41441ade59c52e384",
+            "https://github.com/isaacs/node-tar/commit/d18e4e1f846f4ddddc153b0f536a19c050e7499f",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-83g3-92jg-28cx",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-26960",
+            "https://www.cve.org/CVERecord?id=CVE-2026-26960"
+          ],
+          "PublishedDate": "2026-02-20T02:16:53.883Z",
+          "LastModifiedDate": "2026-02-20T19:24:16.537Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-29786",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.10",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-29786",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "node-tar: hardlink path traversal via drive-relative linkpath",
+          "Description": "node-tar is a full-featured Tar for Node.js. Prior to version 7.5.10, tar can be tricked into creating a hardlink that points outside the extraction directory by using a drive-relative link target such as C:../target.txt, which enables file overwrite outside cwd during normal tar.x() extraction. This issue has been patched in version 7.5.10.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-22",
+            "CWE-59"
+          ],
+          "VendorSeverity": {
+            "amazon": 2,
+            "ghsa": 3,
+            "nvd": 2,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V40Vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:H/VA:L/SC:N/SI:H/SA:L",
+              "V40Score": 8.2
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:C/C:N/I:H/A:N",
+              "V3Score": 6.3
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:N",
+              "V3Score": 8.6
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-29786",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/7bc755dd85e623c0279e08eb3784909e6d7e4b9f",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-qffp-2rhf-9h96",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-29786",
+            "https://www.cve.org/CVERecord?id=CVE-2026-29786"
+          ],
+          "PublishedDate": "2026-03-07T16:15:55.587Z",
+          "LastModifiedDate": "2026-03-11T21:50:01.91Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-31802",
+          "PkgID": "tar@6.2.1",
+          "PkgName": "tar",
+          "PkgPath": "usr/local/lib/node_modules/npm/node_modules/tar/package.json",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/tar@6.2.1",
+            "UID": "ff874301755bc49a"
+          },
+          "InstalledVersion": "6.2.1",
+          "FixedVersion": "7.5.11",
+          "Status": "fixed",
+          "Layer": {
+            "DiffID": "sha256:4983b93ee7967564f02cbf6162b75010ce557404a539fba05ee19a0eae01acbc"
+          },
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-31802",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "tar: tar: File overwrite via drive-relative symlink traversal",
+          "Description": "node-tar is a full-featured Tar for Node.js. Prior to version 7.5.11, tar (npm) can be tricked into creating a symlink that points outside the extraction directory by using a drive-relative symlink target such as C:../../../target.txt, which enables file overwrite outside cwd during normal tar.x() extraction. This vulnerability is fixed in 7.5.11.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-22"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 2,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V40Vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:H/SA:N",
+              "V40Score": 8.2
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N",
+              "V3Score": 5.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+              "V3Score": 6.2
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2026-31802",
+            "https://github.com/isaacs/node-tar",
+            "https://github.com/isaacs/node-tar/commit/f48b5fa3b7985ddab96dc0f2125a4ffc9911b6ad",
+            "https://github.com/isaacs/node-tar/security/advisories/GHSA-9ppj-qmqm-q256",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-31802",
+            "https://www.cve.org/CVERecord?id=CVE-2026-31802"
+          ],
+          "PublishedDate": "2026-03-10T07:44:58.02Z",
+          "LastModifiedDate": "2026-03-18T18:13:34.703Z"
+        }
+      ]
+    }
+  ]
+}
