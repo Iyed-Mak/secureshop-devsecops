@@ -1,6 +1,7 @@
 flask>=2.3.2
 flask_sqlalchemy>=3.0.0
 flask_jwt_extended>=4.5.0
+flask-limiter>=3.5.0
 psycopg2-binary>=2.9.10
 bcrypt>=4.0.0
 python-dotenv>=1.0.0

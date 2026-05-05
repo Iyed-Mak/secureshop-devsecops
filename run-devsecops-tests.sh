@@ -79,16 +79,16 @@ echo ""
 # Vulnerability Testing
 echo "=== Testing Known Vulnerabilities ==="
 
-echo "Testing SQL Injection vulnerability..."
-curl -s "http://localhost/api/user/vulnerable-search?username=admin'%20OR%20'1'='1" | head -c 200
-echo ""
+echo "Verifying known vulnerable endpoints are removed or blocked..."
+status_search=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/api/user/vulnerable-search?username=admin")
+echo "vulnerable-search endpoint HTTP status: $status_search"
 
-echo "Testing Command Injection vulnerability..."
-curl -s -X POST http://localhost/api/user/vulnerable-exec \
+status_exec=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost/api/user/vulnerable-exec \
   -H "Content-Type: application/json" \
-  -d '{"cmd": "echo VULNERABLE"}' | head -c 200
-echo ""
+  -d '{"cmd": "echo VULNERABLE"}')
+echo "vulnerable-exec endpoint HTTP status: $status_exec"
 
+echo ""
 echo "=== DevSecOps Testing Complete ==="
 echo "Check reports/ directory for detailed results"
 echo "Review README.md for more testing guidance"

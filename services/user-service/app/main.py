@@ -1,7 +1,7 @@
 from flask import Flask
 
 from app.config import Config
-from app.extensions import db, jwt
+from app.extensions import db, jwt, limiter
 from app.routes import api
 
 app = Flask(__name__)
@@ -10,6 +10,7 @@ app.config.from_object(Config)
 
 db.init_app(app)
 jwt.init_app(app)
+limiter.init_app(app)
 
 app.register_blueprint(api)
 
@@ -18,8 +19,8 @@ app.register_blueprint(api)
 
 
 if __name__ == "__main__":
+    # Run in development only. Production containers use Gunicorn.
     app.run(
         host="0.0.0.0",
-        port=8001,
-        debug=True
+        port=8001
     )

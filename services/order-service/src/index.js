@@ -73,8 +73,15 @@ app.post('/orders', async (req, res) => {
     // Fill in missing prices from product service
     for (const item of items) {
       if (item.price == null || item.price === 0) {
+        // Validate product_id is a number to prevent SSRF
+        const productId = parseInt(item.product_id, 10);
+        if (isNaN(productId) || productId <= 0) {
+          console.warn(`Invalid product_id: ${item.product_id}`);
+          item.price = 0;
+          continue;
+        }
         try {
-          const response = await fetch(`http://product-service:8002/products/${item.product_id}`);
+          const response = await fetch(`http://product-service:8002/products/${productId}`);
           if (response.ok) {
             const product = await response.json();
             item.price = product.price || 0;

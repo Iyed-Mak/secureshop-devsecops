@@ -4,9 +4,10 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
+from flask_limiter import Limiter
 
 from app.models import User
-from app.extensions import db
+from app.extensions import db, limiter
 import bcrypt
 
 api = Blueprint("api", __name__)
@@ -18,6 +19,7 @@ def health():
 
 
 @api.route("/register", methods=["POST"])
+@limiter.limit("5 per minute")
 def register():
 
     data = request.get_json()
@@ -53,6 +55,7 @@ def register():
 
 
 @api.route("/login", methods=["POST"])
+@limiter.limit("10 per minute")
 def login():
 
     data = request.get_json()
@@ -98,39 +101,41 @@ def profile():
 
 
 # Intentionally vulnerable endpoint for DevSecOps testing (SQL Injection)
-@api.route("/vulnerable-search", methods=["GET"])
-def vulnerable_search():
-    """
-    WARNING: This endpoint is intentionally vulnerable to SQL injection for testing purposes.
-    DO NOT use in production!
-    """
-    username = request.args.get("username", "")
+# REMOVED: This endpoint contained SQL injection vulnerability
+# @api.route("/vulnerable-search", methods=["GET"])
+# def vulnerable_search():
+#     """
+#     WARNING: This endpoint is intentionally vulnerable to SQL injection for testing purposes.
+#     DO NOT use in production!
+#     """
+#     username = request.args.get("username", "")
 
-    # Vulnerable to SQL injection
-    query = f"SELECT username FROM user WHERE username LIKE '%{username}%'"
-    result = db.session.execute(query).fetchall()
+#     # Vulnerable to SQL injection
+#     query = f"SELECT username FROM user WHERE username LIKE '%{username}%'"
+#     result = db.session.execute(query).fetchall()
 
-    users = [row[0] for row in result]
-    return jsonify({"users": users})
+#     users = [row[0] for row in result]
+#     return jsonify({"users": users})
 
 
 # Another vulnerable endpoint (Command Injection)
-@api.route("/vulnerable-exec", methods=["POST"])
-def vulnerable_exec():
-    """
-    WARNING: This endpoint is intentionally vulnerable to command injection for testing purposes.
-    DO NOT use in production!
-    """
-    import subprocess
-    import os
+# REMOVED: This endpoint contained command injection vulnerability
+# @api.route("/vulnerable-exec", methods=["POST"])
+# def vulnerable_exec():
+#     """
+#     WARNING: This endpoint is intentionally vulnerable to command injection for testing purposes.
+#     DO NOT use in production!
+#     """
+#     import subprocess
+#     import os
 
-    cmd = request.json.get("cmd", "")
+#     cmd = request.json.get("cmd", "")
 
-    # Vulnerable to command injection
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
+#     # Vulnerable to command injection
+#     result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
 
-    return jsonify({
-        "stdout": result.stdout,
-        "stderr": result.stderr,
-        "returncode": result.returncode
-    })
+#     return jsonify({
+#         "stdout": result.stdout,
+#         "stderr": result.stderr,
+#         "returncode": result.returncode
+#     })
