@@ -21,6 +21,14 @@ const createOrderLimiter = rateLimit({
   message: 'Too many order creation attempts, please wait a minute.'
 });
 
+const ordersLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many order queries from this IP, please wait a minute.'
+});
+
 app.use(apiLimiter);
 
 const pool = new Pool({
@@ -57,7 +65,7 @@ async function initDB() {
 initDB();
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', ordersLimiter, (req, res) => {
   res.json({ status: 'ok', service: 'order-service' });
 });
 
@@ -145,7 +153,7 @@ app.post('/orders', createOrderLimiter, async (req, res) => {
 });
 
 // Get orders for user
-app.get('/orders', async (req, res) => {
+app.get('/orders', ordersLimiter, async (req, res) => {
   const user_id = req.query.user_id ? parseInt(req.query.user_id, 10) : 1;
 
   try {
@@ -166,7 +174,7 @@ app.get('/orders', async (req, res) => {
 });
 
 // Get order by ID
-app.get('/orders/:id', async (req, res) => {
+app.get('/orders/:id', ordersLimiter, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -190,7 +198,7 @@ app.get('/orders/:id', async (req, res) => {
 });
 
 // Update order status
-app.put('/orders/:id/status', async (req, res) => {
+app.put('/orders/:id/status', ordersLimiter, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
